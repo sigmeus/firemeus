@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+  <head>
+
+    <script src='https://cdn.firebase.com/js/client/1.0.17/firebase.js'></script>
+    <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
+    <link href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/css/style.css" rel="stylesheet">
+    <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+  </head>
+  <body>
+  <div class="container">
+      <div class="header">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="#">Home</a></li>
+          <li><a href="i.htm">Edit</a></li>
+          <li class="active"><a href="#">View <span id="views" class="badge"></span></a></li>
+        </ul>
+        <h3 class="text-muted">FireLive</h3>
+      </div>
+      <div class="row">
+        <div class="col-lg-12 well" id='messagesDiv'></div>
+      </div>
+
+      <div class="row footer">
+        <p>&copy; Sigmeus SAS 2014</p>
+      </div>
+
+    </div> <!-- /container -->
+    <script>
+      $(window).ready(function(){
+        var listRef = new Firebase("https://firewrite.firebaseio.com/presence/");
+        var userRef = listRef.push();
+        var stringid="text-0";
+
+        // Add ourselves to presence list when online.
+        var presenceRef = new Firebase("https://firewrite.firebaseio.com/.info/connected");
+        presenceRef.on("value", function(snap) {
+          if (snap.val()) {
+            userRef.set(true);
+            // Remove ourselves when we disconnect.
+            userRef.onDisconnect().remove();
+          }
+        });
+
+        // Number of online users is the number of objects in the presence list.
+        listRef.on("value", function(snap) {
+          $('#views').text(snap.numChildren());
+        });
+        var myDataRef = new Firebase('https://firewrite.firebaseio.com/test');
+        myDataRef.once('value', function(snapshot) {
+          var message = snapshot.val();
+          var num=message.num;
+          if(num!=undefined){
+            for(var i=0;i<num;i++){
+              stringid="text-"+i;
+              displayChatMessage(i,message[stringid]);
+            } 
+          }
+        });
+        myDataRef.on('value', function(snapshot) {
+          var message = snapshot.val();
+          var num=message.num;
+          if(num==undefined){
+            num=0;
+          }
+          stringid="text-"+num;
+          displayChatMessage(num,message[stringid]);
+        });
+        function displayChatMessage(count,text) {
+          var dom=$('#messages'+count);
+          console.log(dom);
+          if(dom.length == 0){
+            dom=$("<div id='messages"+count+"'/>");
+            dom.appendTo($('#messagesDiv'));
+          }
+          dom.html(text);
+        };
+      });
+    </script>
+  </body>
+</html>

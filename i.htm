@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+  <head>
+
+    <script src='https://cdn.firebase.com/js/client/1.0.17/firebase.js'></script>
+    <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
+    <link href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/css/style.css" rel="stylesheet">
+    <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+  </head>
+   <body>
+
+    <div class="container">
+      <div class="header">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="#">Home</a></li>
+          <li class="active"><a href="#">Edit</a></li>
+          <li><a href="o.htm">View <span id="views" class="badge"></span></a></li>
+        </ul>
+        <h3 class="text-muted">FireLive</h3>
+      </div>
+      <div class="row">
+          <button class="btn btn-primary">.</button>
+          <button class="btn btn-primary">Return</button>
+          <button class="btn btn-primary fa fa-photo"></button>
+        </div>
+      <div class="row">
+        <textarea class="col-lg-12" id='messageInput' placeholder='Message' rows="20"></textarea>
+      </div>
+
+      <form action="http://uploads.im/api" method="post" enctype="multipart/form-data">
+        <input type="file" name="upload" />
+        <input type="submit" value="Upload" />
+      </form>
+
+      <div class="row footer">
+        <p>&copy; Sigmeus SAS 2014</p>
+      </div>
+
+    </div> <!-- /container -->
+    <script>
+      $(window).ready(function(){
+        var num=0;
+        var stringid="text-0"
+        var listRef = new Firebase("https://firewrite.firebaseio.com/presence/");
+        var userRef = listRef.push();
+
+        // Add ourselves to presence list when online.
+        var presenceRef = new Firebase("https://firewrite.firebaseio.com/.info/connected");
+        presenceRef.on("value", function(snap) {
+          if (snap.val()) {
+            userRef.set(true);
+            // Remove ourselves when we disconnect.
+            userRef.onDisconnect().remove();
+          }
+        });
+
+        // Number of online users is the number of objects in the presence list.
+        listRef.on("value", function(snap) {
+          $('#views').text(snap.numChildren());
+        });    
+        var myDataRef = new Firebase('https://firewrite.firebaseio.com/test');
+        myDataRef.once('value', function(snapshot) {
+          var message = snapshot.val();
+          num=message.num;
+          console.log(num);
+          if(num==undefined){
+            num=0;
+            myDataRef.update({num:0});
+          }
+          stringid="text-"+num;
+          $('#messageInput').text(message[stringid]);
+        });
+        $('#messageInput').keyup(function (e) {
+          var text = $('#messageInput').val();
+          if(e.keyCode==13){
+            saveAndClear(myDataRef,text);
+          }
+          else{
+            var data={};
+            data[stringid]=text;
+            myDataRef.update(data);
+          }
+          
+        });
+        var saveAndClear = function(text){
+          num++;
+          myDataRef.update({num:num});
+          stringid="text-"+num;
+          $('#messageInput').val("");
+        }
+
+      });
+    </script>
+  </body>
+</html>
