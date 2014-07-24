@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="assets/css/style.css" rel="stylesheet">
+  </head>
+  <body>
+  <div>
+     <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="i.htm">FireMeus</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="http://sigmeus.github.io">Sigmeus</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+  <div id="header">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 col-lg-offset-3">
+          <h1>FireMeus</h1>
+          <a class="btn btn-lg btn-primary fa fa-twitter" onclick="login('twitter')"> Login with Twitter</a>
+          <a class="btn btn-lg btn-primary fa fa-github" onclick="login('github')"> Login with Github</a>    
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 col-lg-offset-3">
+            <p class="copyright">&copy; Sigmeus SAS 2014</p>
+        </div>
+      </div>    
+    </div>  
+  </div>
+    <script src='https://cdn.firebase.com/js/client/1.0.17/firebase.js'></script>
+    <script type='text/javascript' src='https://cdn.firebase.com/js/simple-login/1.6.2/firebase-simple-login.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/bootstrap.min.js'></script>
+    
+    
+    <script>
+      var login=function(provider){
+        var rootRef = new Firebase('https://firewrite.firebaseio.com');
+        var auth = new FirebaseSimpleLogin(rootRef, function(error, user) {
+          if (error) {
+            console.log(error);
+          } else if (user) {
+            window.location.replace("i.htm");
+          } else {
+            auth.login(provider);
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

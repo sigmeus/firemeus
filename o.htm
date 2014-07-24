@@ -1,33 +1,49 @@
 <!doctype html>
 <html>
   <head>
-
-    <script src='https://cdn.firebase.com/js/client/1.0.17/firebase.js'></script>
-    <script type='text/javascript' src='https://cdn.firebase.com/js/simple-login/1.6.2/firebase-simple-login.js'></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
-  
+    <link href="assets/css/style.css" rel="stylesheet">
   </head>
-  <body>
-  <div class="container">
-      <div class="header">
-        <ul class="nav nav-pills pull-right">
-          <li><a href="#">Home</a></li>
-          <li><a href="i.htm">Edit</a></li>
-          <li class="active"><a href="#">View <span id="views" class="badge"></span></a></li>
-        </ul>
-        <h3 class="text-muted">FireLive</h3>
+   <body>
+    <header class="navbar navbar-inverse navbar-static-top" role="banner">
+      <div class="container">
+        <div class="navbar-header">
+          <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a href="../" class="navbar-brand">FireMeus</a>
+        </div>
+          <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+            <ul class="nav navbar-nav">
+              <li><a id="user" href="#">Loading...</a></li>
+              <li><a  class="active" href="i.htm">Edit</a></li>
+              <li><a href="o.htm">View <span id="views" class="badge"></span></a></li>
+            </ul>
+          </nav>
       </div>
+    </header>
       <div class="row">
-        <div class="col-lg-12 well" id='messagesDiv'></div>
+        <div class="col-lg-12" id='messagesDiv'></div>
       </div>
 
-      <div class="row footer">
+      <div class="footer">
         <p>&copy; Sigmeus SAS 2014</p>
       </div>
 
     </div> <!-- /container -->
+    <script src='https://cdn.firebase.com/js/client/1.0.17/firebase.js'></script>
+    <script type='text/javascript' src='https://cdn.firebase.com/js/simple-login/1.6.2/firebase-simple-login.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/bootstrap.min.js'></script>
+    
+    
     <script>
       $(window).ready(function(){
         var rootRef = new Firebase('https://firewrite.firebaseio.com');
@@ -35,8 +51,7 @@
           if (error) {
             console.log(error);
           } else if (user) {
-            console.log('User ID: ' + user.uid + ', Provider: ' + user.provider);
-               
+            $("#user").text(user.username);
             var listRef = new Firebase("https://firewrite.firebaseio.com/presence/");
             var userRef = listRef.push(user.uid);
             var stringid="text-0";
@@ -55,7 +70,7 @@
             listRef.on("value", function(snap) {
               $('#views').text(snap.numChildren());
             });
-            var myDataRef = new Firebase('https://firewrite.firebaseio.com/'+user.uid);
+            var myDataRef = new Firebase('https://firewrite.firebaseio.com/'+user.provider+":"+user.username);
             myDataRef.once('value', function(snapshot) {
               var message = snapshot.val();
               var num=message.num;
@@ -76,15 +91,16 @@
               displayChatMessage(num,message[stringid]);
             });
             function displayChatMessage(count,text) {
+              if(text==undefined) return;
               var dom=$('#messages'+count);
               if(dom.length == 0){
                 dom=$("<div id='messages"+count+"'/>");
                 dom.appendTo($('#messagesDiv'));
               }
-              dom.html(text);
+              dom.html(text.replace(/ point point/g,"."));
             };
           }else{
-            auth.login("twitter");
+            window.location.replace("login.htm");
           }
         });
       });
