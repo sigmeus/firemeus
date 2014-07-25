@@ -6,6 +6,8 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/jquery.oembedall/0.1/jquery.oembed.css" rel="stylesheet">
+
     <link href="assets/css/style.css" rel="stylesheet">
   </head>
    <body>
@@ -22,18 +24,25 @@
         </div>
           <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
             <ul class="nav navbar-nav">
-              <li><a id="user" href="#">Loading...</a></li>
-              <li><a  class="active" href="i.htm">Edit</a></li>
-              <li><a href="o.htm">View <span id="views" class="badge"></span></a></li>
+              <li><a onclick="editProject()" href="#">Edit</a></li>
+              <li><a class="active" href="">View</a></li>
+            </ul>
+            <ul class="nav navbar-nav pull-right">
+              <li><a id="user" href="home.htm">Loading...</a></li>
+              <li><a id="user" onclick="logout()" href="#">Logout</a></li>
             </ul>
           </nav>
       </div>
     </header>
-      <div class="row">
-        <div class="col-lg-12" id='messagesDiv'></div>
+      <div class="container">
+        <h1 class="text-center" id="title"></h1> <p class="text-center" id="description" class="text-muted"></p>
+        
+        <dl id='messagesDiv' class="dl-horizontal">
+          
+        </dl>
       </div>
 
-      <div class="footer">
+      <div class="container footer">
         <p>&copy; Sigmeus SAS 2014</p>
       </div>
 
@@ -42,68 +51,18 @@
     <script type='text/javascript' src='https://cdn.firebase.com/js/simple-login/1.6.2/firebase-simple-login.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/bootstrap.min.js'></script>
-    
-    
-    <script>
-      $(window).ready(function(){
-        var rootRef = new Firebase('https://firewrite.firebaseio.com');
-        var auth = new FirebaseSimpleLogin(rootRef, function(error, user) {
-          if (error) {
-            console.log(error);
-          } else if (user) {
-            $("#user").text(user.username);
-            var listRef = new Firebase("https://firewrite.firebaseio.com/presence/");
-            var userRef = listRef.push(user.uid);
-            var stringid="text-0";
-
-            // Add ourselves to presence list when online.
-            var presenceRef = new Firebase("https://firewrite.firebaseio.com/.info/connected");
-            presenceRef.on("value", function(snap) {
-              if (snap.val()) {
-                userRef.set(true);
-                // Remove ourselves when we disconnect.
-                userRef.onDisconnect().remove();
-              }
-            });
-
-            // Number of online users is the number of objects in the presence list.
-            listRef.on("value", function(snap) {
-              $('#views').text(snap.numChildren());
-            });
-            var myDataRef = new Firebase('https://firewrite.firebaseio.com/'+user.provider+":"+user.username);
-            myDataRef.once('value', function(snapshot) {
-              var message = snapshot.val();
-              var num=message.num;
-              if(num!=undefined){
-                for(var i=0;i<num;i++){
-                  stringid="text-"+i;
-                  displayChatMessage(i,message[stringid]);
-                } 
-              }
-            });
-            myDataRef.on('value', function(snapshot) {
-              var message = snapshot.val();
-              var num=message.num;
-              if(num==undefined){
-                num=0;
-              }
-              stringid="text-"+num;
-              displayChatMessage(num,message[stringid]);
-            });
-            function displayChatMessage(count,text) {
-              if(text==undefined) return;
-              var dom=$('#messages'+count);
-              if(dom.length == 0){
-                dom=$("<div id='messages"+count+"'/>");
-                dom.appendTo($('#messagesDiv'));
-              }
-              dom.html(text.replace(/ point point/g,"."));
-            };
-          }else{
-            window.location.replace("login.htm");
-          }
-        });
-      });
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.1/mustache.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.7.0/moment.min.js'></script>
+    <script src='assets/js/jquery.oembed.js'></script>
+    <script id="messageTemplate" type="x-tmpl-mustache">
+      <div id='message{{id}}'>
+        <dt>{{message.moment}}</dt>
+        <dd>{{{message.text}}}</dd>
+      </div>
+    </script>
+    <script src='assets/js/app.js'></script>
+    <script type="text/javascript">
+      initO();
     </script>
   </body>
 </html>

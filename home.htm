@@ -6,6 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet">
     <link href="assets/css/style.css" rel="stylesheet">
   </head>
    <body>
@@ -21,10 +22,6 @@
           <a href="../" class="navbar-brand">FireMeus</a>
         </div>
           <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
-            <ul class="nav navbar-nav">
-              <li><a class="active" href="#">Edit</a></li>
-              <li><a onclick="viewProject()" href="#">View <span id="views" class="badge"></span></a></li>
-            </ul>
             <ul class="nav navbar-nav pull-right">
               <li><a id="user" href="home.htm">Loading...</a></li>
               <li><a id="user" onclick="logout()" href="#">Logout</a></li>
@@ -32,35 +29,53 @@
           </nav>
       </div>
     </header>
-    <div>
       <div class="container">
-        <h1 class="text-center" id="title"></h1> <p class="text-center" id="description" class="text-muted"></p>
-        
-        <div class="panel">
-          <ul class="nav navbar-nav navbar-inverse">
-            <li><a class="btn" onclick="appendDot()">.</a></li>
-            <li><a class="btn" onclick="saveAndClear()">Return</a></li>
-            <li><a class="btn fa fa-photo"></a></li>
-          </ul>
-          <textarea class="form-control" id="messageInput" placeholder="Message" rows="10"></textarea>
+        <div class="row" id='projectsDiv'>
+          <div class="col-md-3">
+            <form class="">
+              <div class="panel">
+                <div class="panel-heading">
+                  <h3 class="col-lg-12"><input id="title" required type="text" name="title" class="col-lg-12" style="border:0;background:inherit;" placeholder="title"/></h3>
+                </div>
+                <div class="panel-body">
+                  <input type="text" id="description" name="description" class="col-lg-12" style="border:0;background:inherit;"  placeholder="description"/>
+                </div>
+                <div class="panel-footer">
+                  <button type="submit" id="newProject" class="btn btn-large btn-success fa fa-plus" value=" New Project"></button>
+                </div>
+              </div>
+          </form>
         </div>
-        <form id="imageUpload" action="http://uploads.im/api" method="post" enctype="multipart/form-data">
-          <input class="form-input" type="file" name="upload" />
-          <input class="btn btn-success" type="submit" value="Upload" />
-        </form>
       </div>
-      <div class="footer">
+
+      <div class="container footer">
         <p>&copy; Sigmeus SAS 2014</p>
       </div>
-    </div>
 
+    </div> <!-- /container -->
     <script src='https://cdn.firebase.com/js/client/1.0.17/firebase.js'></script>
     <script type='text/javascript' src='https://cdn.firebase.com/js/simple-login/1.6.2/firebase-simple-login.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/bootstrap.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.1/mustache.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js'></script>
+    <script id="projectTemplate" type="x-tmpl-mustache">
+    <div id="project-{{projectid}}" class="col-md-3">
+      <div class="panel">
+        <div class="panel-heading"><h3>{{title}}</h3></div>
+        <div class="panel-body">
+          {{description}}
+        </div>
+        <div class="panel-footer">
+          <a class="btn btn-success fa fa-arrow-right" href="o.htm?project=project-{{projectid}}"></a>
+          <a class="btn btn-danger fa fa-trash-o" onclick="removeProject({{projectid}})"></a>
+        </div>
+      </div>
+    </div>
+    </script>
     <script src='assets/js/app.js'></script>
     <script type="text/javascript">
-      initI();
+      initHome();
     </script>
   </body>
 </html>
