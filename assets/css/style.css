@@ -115,6 +115,17 @@ a.navbar-brand:hover {
   padding:5px;
   border-radius: 5px;
 }
+.oembedall-container p>img {
+  border-radius: 5px;
+  border: solid 2px #fff;
+  display:block;
+}
+
+.oembedall-container > p, .oembedall-container > div {
+  border-radius: 5px;
+  background-color: #fff;
+  padding:5px;
+}
 
 /* Header */
 
@@ -192,6 +203,8 @@ iframe, img {
   margin: 0;
   background-color: #b7cb1b;
 }
+
+
 
 /* footer */
 #footer {

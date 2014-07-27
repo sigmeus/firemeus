@@ -115,7 +115,8 @@
         maxHeight: null,
 		includeHandle: true,
         embedMethod: 'auto',
-        // "auto", "append", "fill"		
+        // "auto", "append", "fill"
+        className:'col-lg-6',
         onProviderNotFound: function() {},
         beforeEmbed: function() {},
         afterEmbed: function() {},
@@ -379,7 +380,7 @@
                       }
                   }
               }
-              
+              oembedContainer.toggleClass(settings.className || '');
               if (settings.startClosed && settings.startClosed === true) {
                   oembedContainer.children().last().hide()
               }

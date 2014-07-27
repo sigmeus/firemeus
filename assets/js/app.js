@@ -16,7 +16,7 @@ function getUrlParameter(sParam){
 
 function validateURL(textval) {
   var urlregex = new RegExp(
-        "^(http|https|ftp)\://([a-zA-Z0-9\.\-]+(\:[a-zA-Z0-9\.&amp;%\$\-]+)*@)*((25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9])\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[0-9])|([a-zA-Z0-9\-]+\.)*[a-zA-Z0-9\-]+\.(com|edu|gov|int|mil|net|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{2}))(\:[0-9]+)*(/($|[a-zA-Z0-9\.\,\?\'\\\+&amp;%\$#\=~_\-]+))*$");
+        /(^|\s)((https?:\/\/)?[\w-]+(\.[\w-]+)+\.?(:\d+)?(\/\S*)?)/gi);
   return urlregex.test(textval);
 }
 
@@ -210,22 +210,27 @@ var initO=function(){
         displayMessage(num,message[stringid]);
       });
       function displayMessage(count,message) {
-        console.log(message);
+        //console.log(message);
         if(message==undefined) return;
         var dom=$('#message'+count);
         message.text=message.text.replace(/ point point/g,".");
+        message.text=Autolinker.link(message.text, {className:"oembed"+count});
+        console.log(message.text);
         message.moment=moment(message.date).format("HH:mm");
-        if(validateURL(message.text)){
-          message.text="<a target='_blank' class='oembed"+count+"' href='"+message.text+"'> "+message.text+"</a>";
-        }
-        var rendered = Mustache.render(messageTemplate, {message:message, id:count});
-        if(dom.length == 0){
+        var rendered=Mustache.render(messageTemplate, {message:message, id:count});
+        if(dom.length==0){
           $('#messagesDiv').prepend(rendered);
         }
         else{
           dom.replaceWith(rendered);
         }
-        $(".oembed"+count).oembed();
+        console.log($(".oembed"+count));
+        $(".oembed"+count).oembed(null, {
+          startClosed: false,
+          handleOpen: '<span class="fa fa-arrow-down"></span>', // show this custom text/HTML in place of the standard 'show' handle
+          handleClose: '<span class="fa fa-arrow-up"></span>',  // show this custom text/HTML in place of the standard 'hide' handle 
+          className: 'col-lg-6'
+        });
       };
     }else{
       window.location.replace("login.htm");
