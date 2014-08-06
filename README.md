@@ -9,7 +9,7 @@ This is my first FirebaseApp to start learning, so it is not all clean, but it w
 ### Features:
 * view live as you write
 * auto embed links (try youtube, github, soundcloud links etc...)
-* try using the voice recognigtion on your phone, and watch written live on your computer
+* try using the voice recognigtion on your phone, and watch written in real time on your computer
 
 
 View it live at http://firewrite.firebaseapp.com
