@@ -125,7 +125,7 @@ var initI=function(){
           success:function(data){
               if($('#messageInput').val().length>0) stringid=saveAndClear();
               console.log(data.data.img_view);
-              saveMessage(stringid,"<img data-src='"+data.data.img_url+"' class='img-thumbnail' src='"+data.data.thumb_url+"'/>");
+              saveMessage(stringid,"<img  data-src='"+data.data.img_url+"' class='img-thumbnail no-oembed' src='"+data.data.thumb_url+"'/>");
               stringid=saveAndClear();
           },
           error: function(data){
@@ -214,7 +214,8 @@ var initO=function(){
         if(message==undefined) return;
         var dom=$('#message'+count);
         message.text=message.text.replace(/ point point/g,".");
-        message.text=Autolinker.link(message.text, {className:"oembed"+count});
+        if(!$(message.text).hasClass("no-oembed"))
+          message.text=Autolinker.link(message.text, {className:"oembed"+count});
         console.log(message.text);
         message.moment=moment(message.date).format("HH:mm");
         var rendered=Mustache.render(messageTemplate, {message:message, id:count});

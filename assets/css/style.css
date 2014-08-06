@@ -131,12 +131,12 @@ a.navbar-brand:hover {
 
 #header {	
 	background-color: #444;
-	background: url(../img/main-bg.jpg) no-repeat center top;
+	background: url(../img/intro-bg.jpg) no-repeat center top;
 	margin-top: -20px;
 	
 	background-attachment: relative;
 	background-position: center center;
-	min-height: 650px;
+	height: 800px;
 	width: 100%;
 	
     -webkit-background-size: 100%;
